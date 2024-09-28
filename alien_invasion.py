@@ -51,7 +51,7 @@ class AllenInvasion:
         self.sb = Scoreboard(self)
         self.m = 0
         
-        self.background=pygame.image.load(r"images\b.jpg")
+        self.background=pygame.image.load(r"images//b.jpg")
         
         self.screen.blit(self.background,(0,0))
         
@@ -204,7 +204,7 @@ class AllenInvasion:
             if ab.rect.bottom >= self.settings.screen_height:
                 self.ab.remove(ab)
         if pygame.sprite.spritecollideany(self.ship,self.ab):
-            self.settings.ship_blood -= 4
+            self.settings.ship_blood -= 3
             
             self.sb.prep_blood()
             self._check_blood()

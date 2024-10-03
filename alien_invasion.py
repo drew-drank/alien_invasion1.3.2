@@ -144,7 +144,12 @@ class AllenInvasion:
             if self.game_active:
                 self.music._check_fire_music()
         elif event.key == pygame.K_q:
-            exit()
+            sys.exit()
+        elif event.key == pygame.K_f:
+            info = pygame.display.Info()
+            self.settings.screen_height = info.current_h
+            self.settings.screen_width = info.current_w
+            self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height),pygame.FULLSCREEN)
         elif event.key == pygame.K_p:
             if not self.game_active:
                 self.stats_new_game()

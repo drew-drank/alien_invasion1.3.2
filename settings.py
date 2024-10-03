@@ -29,7 +29,7 @@ class Settings:
         self.ship_limit = 3
 
         #版本
-        self.v = '1.3.4'
+        self.v = '1.3.5'
         
         #加快游戏节奏
         self.speedup_scale = 1.3
@@ -41,7 +41,7 @@ class Settings:
         self.ship_speed = 20.5
         self.fleet_direction = 1
         self.alien_points = 50
-        self.ship_full_blood = 100
+        self.ship_full_blood = 125
         self.ship_blood = self.ship_full_blood
         
 

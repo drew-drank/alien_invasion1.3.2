@@ -1,6 +1,6 @@
 from settings import Settings
 v = Settings().v
-print(f"外星人入侵 v{v} on ",end='')
+print(f"坤星人入侵 v{v} on ",end='')
 
 import sys
 from time import sleep
@@ -30,7 +30,7 @@ class AllenInvasion:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         
         
-        pygame.display.set_caption(f"外星人入侵 v{self.settings.v}")
+        pygame.display.set_caption(f"坤星人入侵 v{self.settings.v}")
 
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
@@ -51,7 +51,7 @@ class AllenInvasion:
         self.sb = Scoreboard(self)
         self.m = 0
         
-        self.background=pygame.image.load(r"images//b.jpg")
+        self.background=pygame.image.load(r"images\b.jpg")
         
         self.screen.blit(self.background,(0,0))
         
@@ -73,7 +73,7 @@ class AllenInvasion:
                 self._update_aliens()
                 self.cab()
                 self.cr()
-                
+                self._check_blood()
                 
                 
             self._update_screen()
@@ -204,7 +204,7 @@ class AllenInvasion:
             if ab.rect.bottom >= self.settings.screen_height:
                 self.ab.remove(ab)
         if pygame.sprite.spritecollideany(self.ship,self.ab):
-            self.settings.ship_blood -= 3
+            self.settings.ship_blood -= 2.5
             
             self.sb.prep_blood()
             self._check_blood()
@@ -259,7 +259,7 @@ class AllenInvasion:
             self.sb.prep_high_score()
 
     def _check_blood(self):
-        if self.settings.ship_blood == 0:
+        if self.settings.ship_blood <= 0:
             self._ship_hit()
 
    

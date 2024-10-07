@@ -6,7 +6,7 @@ import sys
 from time import sleep
 
 import pygame
-
+from pygame.locals import *
 
 from game_stats import GameStats
 from ship import Ship
@@ -27,8 +27,9 @@ class AllenInvasion:
         self.settings = Settings()
         
         
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-        
+        self.screen = pygame.display.set_mode((0,0),FULLSCREEN)
+        self.settings.screen_width = self.screen.get_rect().width
+        self.settings.screen_height = self.screen.get_rect().height
         
         pygame.display.set_caption(f"坤星人入侵 v{self.settings.v}")
 
@@ -55,9 +56,10 @@ class AllenInvasion:
         
         self.screen.blit(self.background,(0,0))
         
-        
+        self.isfullscreen = True
         
         self.music._check_background_music()
+        
     def run_game(self):
           
             
@@ -93,6 +95,7 @@ class AllenInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mp = pygame.mouse.get_pos()
                 self._check_play_button(mp)
+        
 
     def _check_play_button(self,mp):
         if self.play_button.rect.collidepoint(mp) and not self.game_active:
@@ -110,7 +113,7 @@ class AllenInvasion:
         self.aliens.empty()
 
         self._create_fleet()
-        self.ship.center_ship()
+        
 
             #隐藏光标
         pygame.mouse.set_visible(False)
@@ -145,15 +148,28 @@ class AllenInvasion:
                 self.music._check_fire_music()
         elif event.key == pygame.K_q:
             sys.exit()
-        elif event.key == pygame.K_f:
-            info = pygame.display.Info()
-            self.settings.screen_height = info.current_h
-            self.settings.screen_width = info.current_w
-            self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height),pygame.FULLSCREEN)
         elif event.key == pygame.K_p:
             if not self.game_active:
                 self.stats_new_game()
-        
+        if event.key == K_f:
+            self._fullsecreen_need()  
+    def _fullsecreen_need(self):
+        if not self.isfullscreen:
+            self.isfullscreen = True
+                
+            self.screen = pygame.display.set_mode((0,0),FULLSCREEN)
+            self.settings.screen_width = self.screen.get_rect().width
+            self.settings.screen_height = self.screen.get_rect().height
+            self.ship.rect.midbottom = self.screen.get_rect().midbottom
+            self._create_fleet()
+        else:
+            self.isfullscreen = False 
+            self.settings.screen_width = 1200
+            self.settings.screen_height = 800
+            self.screen = pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
+            self.ship.rect.midbottom = self.screen.get_rect().midbottom
+            self._create_fleet()
+
     def _check_keyup_events(self,event):
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
@@ -269,17 +285,18 @@ class AllenInvasion:
 
    
     def _create_fleet(self):
+       self.aliens.empty()
        alien = Alien(self)
        alien_width,alien_height = alien.rect.size
 
        current_x,current_y = alien_width,alien_height
        while current_y < (self.settings.screen_height - 3 * alien_height):
-           while current_x < (self.settings.screen_width -  2 * alien_width):
+            while current_x < (self.settings.screen_width -  2 * alien_width):
                self._create_alien(current_x,current_y)
                current_x += 1.5 * alien_width
 
-           current_x = alien_width
-           current_y += 2 * alien_height
+            current_x = alien_width
+            current_y += 2 * alien_height
 
     def _create_alien(self,x_position,y_position):
         new_alien = Alien(self)
@@ -312,17 +329,18 @@ class AllenInvasion:
         if self.stats.ships_left > 1:
             self.stats.ships_left -= 1
             self.sb.prep_ships()
-
-            self.bullets.empty() 
-            self.aliens.empty()
-
+            
+            self.bullets.empty()
+            
+            self.rain.empty()
+            self.ab.empty()
             self._create_fleet()
-            self.ship.center_ship()
+            
             
             self.settings.ship_blood = self.settings.ship_full_blood
             
             sleep(1)
-            
+            self.sb.prep_blood()
         else:
             self.game_active = False
             pygame.mouse.set_visible(True)

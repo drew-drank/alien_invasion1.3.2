@@ -43,7 +43,7 @@ class Scoreboard:
         self.level_image = self.font.render(level_str,True,self.text_color,None)
 
         self.level_rect = self.level_image.get_rect()
-        self.level_rect.right = self.screen_rect.right 
+        self.level_rect.right = self.score_rect.right 
         self.level_rect.top = self.score_rect.bottom + 10
     def prep_blood(self):
         rounded_blood = self.ai_game.settings.ship_blood

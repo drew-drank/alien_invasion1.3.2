@@ -10,7 +10,7 @@ class Button:
         self.button_color = (255,165,0,255)
         self.text_color = (250,250,250)
         self.font = pygame.font.SysFont("SimHei",40)
-
+        
         self.rect = pygame.Rect(0,0,self.width,self.height)
         self.rect.center = self.screen_rect.center
 

@@ -1,5 +1,7 @@
 class Settings:
+    """存储游戏《坤星人入侵》中几乎所有设置的类"""
     def __init__(self):
+        """初"""
         #屏幕设置
         self.screen_width = 1300
         self.screen_height = 800
@@ -29,7 +31,7 @@ class Settings:
         self.ship_limit = 3
 
         #版本
-        self.v = '1.4.0 beta'
+        self.v = '1.5.0'
         
         #加快游戏节奏
         self.speedup_scale = 1.3

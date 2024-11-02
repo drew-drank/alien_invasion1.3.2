@@ -13,7 +13,7 @@ class GameStats:
         p = Path('high_score.txt')
         self.c = p.read_text().rstrip()
         self.high_score = int(self.c)
-        
+        self.infplay = False
         
     def reset_stats(self):
         self.ships_left = self.settings.ship_limit

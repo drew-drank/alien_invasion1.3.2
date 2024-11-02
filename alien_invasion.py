@@ -21,7 +21,9 @@ from music import Music
 
 
 class AllenInvasion:
+    """管理游戏资源和行为的类"""
     def __init__(self):
+        """初始化游戏并创建游戏资源"""
         pygame.init()  
         self.clock = pygame.time.Clock()
         self.settings = Settings()
@@ -48,6 +50,10 @@ class AllenInvasion:
 
         self.game_active = False
         self.play_button = Button(self,"开始")
+        
+        self.play_button2 = Button(self,"3")
+        self.play_button2.rect.y+=200
+        self.play_button2.msg_image_rect.y += 200
 
         self.sb = Scoreboard(self)
         self.m = 0
@@ -61,9 +67,9 @@ class AllenInvasion:
         self.music._check_background_music()
         
     def run_game(self):
-          
-            
+        """开始游戏主循环"""
         while True:
+            #侦听键盘和鼠标事件
             self._check_events()
             
             
@@ -80,11 +86,11 @@ class AllenInvasion:
                 
             self._update_screen()
             self.clock.tick(60)
-         
 
             
             
     def _check_events(self):
+        """相应按键和鼠标事件"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.exit_game()
@@ -95,12 +101,14 @@ class AllenInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mp = pygame.mouse.get_pos()
                 self._check_play_button(mp)
-        
+                
 
     def _check_play_button(self,mp):
         if self.play_button.rect.collidepoint(mp) and not self.game_active:
             self.stats_new_game()
-
+        if self.play_button2.rect.collidepoint(mp) and not self.game_active:
+            self.stats.infplay = True
+            self.stats_new_game()
 
     def stats_new_game(self):
         self.stats.reset_stats()
@@ -114,6 +122,7 @@ class AllenInvasion:
 
         self._create_fleet()
         
+
 
             #隐藏光标
         pygame.mouse.set_visible(False)
@@ -139,6 +148,7 @@ class AllenInvasion:
 
     def _check_keydowm_events(self,event):
         if event.key == pygame.K_RIGHT:
+            #向右移动飞船
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
@@ -164,12 +174,13 @@ class AllenInvasion:
             self._create_fleet()
         else:
             self.isfullscreen = False 
-            self.settings.screen_width = 1200
+            self.settings.screen_width = 1300
             self.settings.screen_height = 800
-            self.screen = pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
+            self.screen = pygame.display.set_mode(
+                (self.settings.screen_width, self.settings.screen_height), RESIZABLE)
             self.ship.rect.midbottom = self.screen.get_rect().midbottom
             self._create_fleet()
-
+            
     def _check_keyup_events(self,event):
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
@@ -188,8 +199,8 @@ class AllenInvasion:
         new_b = AlienBreak(self)
         self.ab.add(new_b)
     def _update_screen(self):
-        
-        
+        """更新屏幕上的图像，并切换到新屏幕"""
+        #设置背景
         self.screen.blit(self.background,(0,0))
         self.bullets.draw(self.screen)
         for rain in self.rain.sprites():
@@ -202,7 +213,8 @@ class AllenInvasion:
 
         if not self.game_active:
             self.play_button.draw_button()
-            
+            self.play_button2.draw_button()
+        #让最近绘制的屏幕可见
         pygame.display.flip()
         self.clock.tick(60)
 
@@ -327,7 +339,8 @@ class AllenInvasion:
 
     def _ship_hit(self):
         if self.stats.ships_left > 1:
-            self.stats.ships_left -= 1
+            if not self.stats.infplay:
+                self.stats.ships_left -= 1
             self.sb.prep_ships()
             
             self.bullets.empty()
@@ -367,6 +380,7 @@ class AllenInvasion:
     
         
 if __name__ == '__main__':
+    #创建实例并运行游戏
     ai=AllenInvasion()
     ai.run_game()
 

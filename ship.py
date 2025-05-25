@@ -23,7 +23,7 @@ class Ship(Sprite):
         self.moving_right = False
         self.moving_left = False
 
-        
+    
 
     def update(self):
         """根据移动标志调准飞船位置"""

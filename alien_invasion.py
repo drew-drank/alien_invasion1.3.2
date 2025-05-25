@@ -4,7 +4,8 @@ print(f"坤星人入侵 v{v} on ",end='')
 
 import sys
 from time import sleep
-
+import turtle
+import math
 import pygame
 from pygame.locals import *
 
@@ -18,6 +19,7 @@ from golden import Rain
 from alien_break import AlienBreak
 from pathlib import Path
 from music import Music
+from random import *
 
 
 class AllenInvasion:
@@ -49,9 +51,9 @@ class AllenInvasion:
         
 
         self.game_active = False
-        self.play_button = Button(self,"开始")
+        self.play_button = Button(self,"普通模式")
         
-        self.play_button2 = Button(self,"3")
+        self.play_button2 = Button(self,"无尽模式")
         self.play_button2.rect.y+=200
         self.play_button2.msg_image_rect.y += 200
 
@@ -65,6 +67,7 @@ class AllenInvasion:
         self.isfullscreen = True
         
         self.music._check_background_music()
+        self.info = pygame.display.Info()
         
     def run_game(self):
         """开始游戏主循环"""
@@ -101,7 +104,48 @@ class AllenInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mp = pygame.mouse.get_pos()
                 self._check_play_button(mp)
-                
+            
+            
+    def eggy(self):
+        
+
+        __Pen = turtle.Pen()
+
+
+
+        a = 0.618
+        __Pen.speed(0)
+        __Pen.color('white')
+        __Pen.goto(-420,200)
+        __Pen.color('black')
+        c = __Pen.xcor()
+        __Pen.circle(a, extent=90)
+        __Pen.left(90)
+
+
+
+
+        b = __Pen.xcor() - c
+        for i in range(4):
+            __Pen.forward(b)
+            __Pen.left(90)
+        __Pen.left(315)
+
+
+        for i in range(16):
+    
+            __Pen.right(45)
+            __Pen.circle(a, extent=90)
+            __Pen.right(180)
+    
+            for i in range(4):
+                __Pen.forward(b)
+                __Pen.right(90)
+            __Pen.right(135)
+            a = (a / 0.618)
+            b = (b / 0.618)
+
+        turtle.done()
 
     def _check_play_button(self,mp):
         if self.play_button.rect.collidepoint(mp) and not self.game_active:
@@ -161,8 +205,13 @@ class AllenInvasion:
         elif event.key == pygame.K_p:
             if not self.game_active:
                 self.stats_new_game()
-        if event.key == K_f:
-            self._fullsecreen_need()  
+        elif event.key == K_f:
+            self._fullsecreen_need() 
+        elif event.key == K_e:
+            try:
+                self.eggy()
+            except:
+                print('error')
     def _fullsecreen_need(self):
         if not self.isfullscreen:
             self.isfullscreen = True
@@ -191,7 +240,7 @@ class AllenInvasion:
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
         
-
+    
     def _down_rain(self):
         new_rain = Rain(self)
         self.rain.add(new_rain)
@@ -256,7 +305,7 @@ class AllenInvasion:
             if rain.rect.bottom >= self.settings.screen_height:
                 self.rain.remove(rain)
     def _check_bullet_alien_collisions(self):
-        collisions = pygame.sprite.groupcollide(self.bullets,self.aliens,False,True)
+        collisions = pygame.sprite.groupcollide(self.bullets,self.aliens,True,True)
         
         
 
@@ -300,22 +349,21 @@ class AllenInvasion:
        self.aliens.empty()
        alien = Alien(self)
        alien_width,alien_height = alien.rect.size
-
+       x = []
        current_x,current_y = alien_width,alien_height
-       while current_y < (self.settings.screen_height - 3 * alien_height):
-            while current_x < (self.settings.screen_width -  2 * alien_width):
-               self._create_alien(current_x,current_y)
+       while current_y < (self.settings.screen_height - 5 * alien_height):
+            x.append(current_x)
+            while current_x < (self.settings.screen_width - 2 * alien_width):
+              
                current_x += 1.5 * alien_width
-
-            current_x = alien_width
-            current_y += 2 * alien_height
-
-    def _create_alien(self,x_position,y_position):
-        new_alien = Alien(self)
-        new_alien.x = x_position
-        new_alien.rect.x = x_position
-        new_alien.rect.y = y_position
-        self.aliens.add(new_alien)
+            
+            current_y += 120
+       
+       print(x)
+       self.xa = x[-1]
+       for i in range(15):
+            self._create_alien(uniform(1,self.xa),uniform(1,current_y))
+       self._create_alien(-60,uniform(1,current_y))
 
     def _update_aliens(self):
         self._check_fleet_edges() 
@@ -323,8 +371,28 @@ class AllenInvasion:
 
         if pygame.sprite.spritecollideany(self.ship,self.aliens):
             self._ship_hit()
-
+        
+        
         self._check_aliens_bottom()
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_fleet()
+            self.settings.increase_speed()
+            self.stats.level += 1
+            self.sb.prep_level()
+            self.sb.prep_blood()
+            self.settings.ship_blood = self.settings.ship_full_blood
+        
+    def _create_alien(self,x_position,y_position):
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+        new_alien.rect.y = y_position
+        self.aliens.add(new_alien)
+
+   
+
+        
 
     def _check_fleet_edges(self):
         for alien in self.aliens.sprites():
@@ -364,8 +432,21 @@ class AllenInvasion:
     def _check_aliens_bottom(self):
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= self.settings.screen_height:
-                self._ship_hit()
+                
+                alien.rect.bottom = 0
+                if alien.rect.right == 0:
+                    alien.rect.top=0
                 break
+        if str(self.aliens) == '<Group(1 sprites)>':
+            self.bullets.empty()
+            self._create_fleet()
+            self.settings.increase_speed()
+            self.stats.level += 1
+            self.sb.prep_level()
+            self.sb.prep_blood()
+            self.settings.ship_blood = self.settings.ship_full_blood
+        print(self.aliens)
+                
 
 
     def exit_game(self):

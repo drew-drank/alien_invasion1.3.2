@@ -19,7 +19,7 @@ class Rain(Sprite):
         self.rect.y = self.y
 
     def x_update(self):
-        self.x = randint(1,1200)
+        self.x = randint(1,1920)
         self.rect.x = self.x
 
     def draw_rain(self):

@@ -7,7 +7,7 @@ class Bullet(Sprite):
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         
-        self.image = pygame.image.load('images/basketball.bmp')
+        self.image = pygame.image.load('images/basketball.png')
         self.rect = self.image.get_rect()
         self.rect.midtop = ai_game.ship.rect.midtop
        

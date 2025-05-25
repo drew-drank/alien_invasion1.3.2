@@ -3,9 +3,9 @@ class Music:
     def __init__(self):
         self.mixer = pygame.mixer
         self.mixer.init()
-        self.myymusic = pygame.mixer.Sound("images/fire.wav")
-        self.mymusic = pygame.mixer.Sound("images/break.wav")
-        self.mixer.music.load('images/background.ogg')
+        self.myymusic = pygame.mixer.Sound("images/fire.mp3")
+        self.mymusic = pygame.mixer.Sound("images/break.mp3")
+        self.mixer.music.load('images/background2.mp3')
 
     def _check_fire_music(self):
         self.myymusic.set_volume(0.7)

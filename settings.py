@@ -22,7 +22,7 @@ class Settings:
         
 
         #外星人
-        self.fleet_drop_speed = 5
+        self.fleet_drop_speed = 2
         self.fleet_direction = 1
         self.ab_color = (0,250,154)
         
@@ -44,10 +44,12 @@ class Settings:
         self.fleet_direction = 1
         self.alien_points = 50
         self.ship_full_blood = 125
+        self.fleet_drop_speed = 2
         self.ship_blood = self.ship_full_blood
         
 
     def increase_speed(self):
+        self.fleet_drop_speed *= self.speedup_scale
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
         self.ship_speed *= self.speedup_scale

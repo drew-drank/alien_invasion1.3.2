@@ -1,6 +1,6 @@
 from settings import Settings
 v = Settings().v
-print(f"坤星人入侵 v{v} on ",end='')
+print(f"外星人入侵 v{v} on ",end='')
 
 import sys
 from time import sleep

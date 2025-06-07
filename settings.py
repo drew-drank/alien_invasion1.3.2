@@ -31,7 +31,7 @@ class Settings:
         self.ship_limit = 3
 
         #版本
-        self.v = '1.5.0'
+        self.v = '2.0.0'
         
         #加快游戏节奏
         self.speedup_scale = 1.3

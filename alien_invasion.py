@@ -200,14 +200,14 @@ class AllenInvasion:
             self._fire_bullet()
             if self.game_active:
                 self.music._check_fire_music()
-        elif event.key == pygame.K_q:
+        elif event.key == pygame.K_ESCAPE:
             sys.exit()
-        elif event.key == pygame.K_p:
+        elif event.key == pygame.K_TAB:
             if not self.game_active:
                 self.stats_new_game()
-        elif event.key == K_f:
+        elif event.key == K_F1:
             self._fullsecreen_need() 
-        elif event.key == K_e:
+        elif event.key == K_LALT:
             try:
                 self.eggy()
             except:
@@ -304,6 +304,12 @@ class AllenInvasion:
         for rain in self.rain.copy():
             if rain.rect.bottom >= self.settings.screen_height:
                 self.rain.remove(rain)
+        if pygame.sprite.spritecollideany(self.ship,self.rain):
+            
+            self.stats.score += self.settings.rain_points 
+            self.sb.prep_score()
+            self.sb.check_high_score()
+            self.sb.prep_high_score()
     def _check_bullet_alien_collisions(self):
         collisions = pygame.sprite.groupcollide(self.bullets,self.aliens,True,True)
         
@@ -328,6 +334,10 @@ class AllenInvasion:
             self.sb.prep_high_score()
             
             self.music._check_break_music()
+
+            Rain(self).rect.x = Alien(self).rect.x
+            Rain(self).rect.y = Alien(self).rect.y
+            Rain(self).draw_rain()
             
       
     def _check_bullet_rain_collisions(self):

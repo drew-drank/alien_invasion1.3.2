@@ -61,6 +61,7 @@ class AllenInvasion:
         self.m = 0
         
         self.background=pygame.image.load(r"images\b.jpg")
+        self.background=pygame.transform.scale(self.background,(self.settings.screen_width,self.settings.screen_height))
         
         self.screen.blit(self.background,(0,0))
         

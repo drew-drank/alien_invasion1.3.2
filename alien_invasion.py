@@ -29,7 +29,7 @@ class AllenInvasion:
         pygame.init()  
         self.clock = pygame.time.Clock()
         self.settings = Settings()
-        
+        self.firstplay = 0
         
         self.screen = pygame.display.set_mode((0,0),FULLSCREEN)
         self.settings.screen_width = self.screen.get_rect().width
@@ -51,9 +51,9 @@ class AllenInvasion:
         
 
         self.game_active = False
-        self.play_button = Button(self,"普通模式")
+        self.play_button = Button(self,"Normal mode")
         
-        self.play_button2 = Button(self,"无尽模式")
+        self.play_button2 = Button(self,"Endless mode")
         self.play_button2.rect.y+=200
         self.play_button2.msg_image_rect.y += 200
 
@@ -164,8 +164,9 @@ class AllenInvasion:
 
         self.bullets.empty()
         self.aliens.empty()
-
-        self._create_fleet()
+        if self.firstplay==0:
+            self._create_fleet()
+            self.firstplay=1
         
 
 
@@ -216,21 +217,39 @@ class AllenInvasion:
     def _fullsecreen_need(self):
         if not self.isfullscreen:
             self.isfullscreen = True
-                
-            self.screen = pygame.display.set_mode((0,0),FULLSCREEN)
+            self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
             self.settings.screen_width = self.screen.get_rect().width
             self.settings.screen_height = self.screen.get_rect().height
             self.ship.rect.midbottom = self.screen.get_rect().midbottom
             self._create_fleet()
+            self.sb.isfullscreen = 0
         else:
             self.isfullscreen = False 
+            # 设置窗口模式的分辨率
             self.settings.screen_width = 1300
             self.settings.screen_height = 800
             self.screen = pygame.display.set_mode(
                 (self.settings.screen_width, self.settings.screen_height), RESIZABLE)
+        
+            # 重新定位飞船
             self.ship.rect.midbottom = self.screen.get_rect().midbottom
+            self.sb.high_score_rect.centerx = 650
+        
+            # 重新定位所有UI元素
+            self.sb.prep_score()
+            self.sb.prep_high_score()
+            self.sb.prep_level()
+            self.sb.prep_blood()
+        
+            # 重新创建外星人舰队
             self._create_fleet()
-            
+        
+            # 重新定位按钮
+            self.play_button.rect.center = self.screen.get_rect().center
+            self.play_button.msg_image_rect.center = self.play_button.rect.center
+            self.play_button2.rect.center = (self.screen.get_rect().centerx, self.screen.get_rect().centery + 200)
+            self.play_button2.msg_image_rect.center = self.play_button2.rect.center
+            self.sb.isfullscreen = 1
     def _check_keyup_events(self,event):
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
@@ -287,7 +306,7 @@ class AllenInvasion:
             if ab.rect.bottom >= self.settings.screen_height:
                 self.ab.remove(ab)
         if pygame.sprite.spritecollideany(self.ship,self.ab):
-            self.settings.ship_blood -= 2.5
+            self.settings.ship_blood -= 1
             
             self.sb.prep_blood()
             self._check_blood()
@@ -456,7 +475,7 @@ class AllenInvasion:
             self.sb.prep_level()
             self.sb.prep_blood()
             self.settings.ship_blood = self.settings.ship_full_blood
-        print(self.aliens)
+        
                 
 
 
